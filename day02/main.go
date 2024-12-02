@@ -31,11 +31,31 @@ func readInput() [][]int {
 
 
 func ans1(reports [][]int) int {
-	return(len(reports))
+	res := 0
+	for _, rep := range(reports) {
+		sign := 1
+		if rep[1] < rep[0] {
+				sign = -1
+		}
+		ok := 1
+		prevlevel := rep[0] - 1*sign
+		for _, level := range(rep) {
+			diff := (level - prevlevel)/sign
+			if diff >= 1 && diff <= 3 {
+				prevlevel = level
+				continue
+			} else {
+				ok = 0
+				break
+			}
+		}
+		res += ok
+	}
+	return(res)
 }
 
 func main() {
 	reports := readInput()
-	fmt.Println(reports)
+	// fmt.Println(reports)
 	fmt.Println("ans1:", ans1(reports))
 }

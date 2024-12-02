@@ -43,7 +43,6 @@ func ans1(reports [][]int) int {
 			diff := (level - prevlevel)/sign
 			if diff >= 1 && diff <= 3 {
 				prevlevel = level
-				continue
 			} else {
 				ok = 0
 				break
@@ -54,8 +53,40 @@ func ans1(reports [][]int) int {
 	return(res)
 }
 
+func ans2(reports [][]int) int {
+	res := 0
+	for _, rep := range(reports) {
+		ok, bad := 1, 0
+		diff0 := max(rep[0], rep[1]) - min(rep[0], rep[1])
+		if diff0 < 1 || diff0 > 3 {
+			bad = 1
+			rep = rep[1:]
+		}
+		sign := 1
+		if rep[1] < rep[0] {
+				sign = -1
+		}
+		prevlevel := rep[0] - 1*sign
+		for _, level := range(rep) {
+			diff := (level - prevlevel)/sign
+			if diff >= 1 && diff <= 3 {
+				prevlevel = level
+			} else {
+				if bad == 0 {
+					bad = 1
+				} else {
+					ok = 0
+					break
+				}
+			}
+		}
+		res += ok
+	}
+	return(res)
+}
+
 func main() {
 	reports := readInput()
-	// fmt.Println(reports)
 	fmt.Println("ans1:", ans1(reports))
+	fmt.Println("ans2:", ans2(reports))
 }

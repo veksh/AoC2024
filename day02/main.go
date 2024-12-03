@@ -53,16 +53,6 @@ func ans1(reports [][]int) int {
 	return(res)
 }
 
-func numsign(arg int) int {
-	if arg < 0 {
-		return -1
-	}
-	if arg > 0 {
-		return 1
-	}
-	return 0
-}
-
 func isSafe(rep []int, removesLeft int) bool {
 	sign := 1
 	if rep[1] < rep[0] {
@@ -84,17 +74,26 @@ func isSafe(rep []int, removesLeft int) bool {
 	return true
 }
 
+func ans1a(reports [][]int) int {
+	res := 0
+	for _, rep := range(reports) {
+		if isSafe(rep, 0) {
+			res += 1
+		}
+	}
+	return res
+}
+
 func ans2(reports [][]int) int {
 	res := 0
 	for _, rep := range(reports) {
 		if isSafe(rep, 1) || isSafe(rep[1:], 0) {
 			res += 1
-			continue
-		}
-		rep[1] = rep[0]
-		if isSafe(rep[1:], 0) {
-			res += 1
-			continue
+		} else {
+			rep[1] = rep[0]
+			if isSafe(rep[1:], 0) {
+				res += 1
+			}
 		}
 	}
 	return(res)
@@ -103,5 +102,6 @@ func ans2(reports [][]int) int {
 func main() {
 	reports := readInput()
 	fmt.Println("ans1:", ans1(reports))
+	fmt.Println("- 1a:", ans1a(reports))
 	fmt.Println("ans2:", ans2(reports))
 }

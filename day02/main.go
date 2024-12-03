@@ -53,34 +53,49 @@ func ans1(reports [][]int) int {
 	return(res)
 }
 
+func numsign(arg int) int {
+	if arg < 0 {
+		return -1
+	}
+	if arg > 0 {
+		return 1
+	}
+	return 0
+}
+
+func isSafe(rep []int, removesLeft int) bool {
+	sign := 1
+	if rep[1] < rep[0] {
+			sign = -1
+	}
+	prevlevel := rep[0] - 1*sign
+	for _, level := range(rep) {
+		diff := (level - prevlevel)/sign
+		if diff >= 1 && diff <= 3 {
+			prevlevel = level
+		} else {
+			if removesLeft > 0 {
+				removesLeft -= 1
+			} else {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func ans2(reports [][]int) int {
 	res := 0
 	for _, rep := range(reports) {
-		ok, bad := 1, 0
-		diff0 := max(rep[0], rep[1]) - min(rep[0], rep[1])
-		if diff0 < 1 || diff0 > 3 {
-			bad = 1
-			rep = rep[1:]
+		if isSafe(rep, 1) || isSafe(rep[1:], 0) {
+			res += 1
+			continue
 		}
-		sign := 1
-		if rep[1] < rep[0] {
-				sign = -1
+		rep[1] = rep[0]
+		if isSafe(rep[1:], 0) {
+			res += 1
+			continue
 		}
-		prevlevel := rep[0] - 1*sign
-		for _, level := range(rep) {
-			diff := (level - prevlevel)/sign
-			if diff >= 1 && diff <= 3 {
-				prevlevel = level
-			} else {
-				if bad == 0 {
-					bad = 1
-				} else {
-					ok = 0
-					break
-				}
-			}
-		}
-		res += ok
 	}
 	return(res)
 }

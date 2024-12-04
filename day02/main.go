@@ -53,7 +53,7 @@ func ans1(reports [][]int) int {
 	return(res)
 }
 
-func isSafe(rep []int, removesLeft int) bool {
+func isSafeWithRemoves(rep []int, removesLeft int) bool {
 	sign := 1
 	if rep[1] < rep[0] {
 			sign = -1
@@ -74,25 +74,32 @@ func isSafe(rep []int, removesLeft int) bool {
 	return true
 }
 
-func ans1a(reports [][]int) int {
-	res := 0
-	for _, rep := range(reports) {
-		if isSafe(rep, 0) {
-			res += 1
-		}
+func isSafeSkip(repOrig []int, pos int) bool {
+	rep := make([]int, 0, len(repOrig)-1)
+	rep = append(rep, repOrig[:pos]...)
+	rep = append(rep, repOrig[pos+1:]...)
+	sign := 1
+	if rep[1] < rep[0] {
+			sign = -1
 	}
-	return res
+	prevlevel := rep[0] - 1*sign
+	for _, level := range(rep) {
+		diff := (level - prevlevel)/sign
+		if diff < 1 || diff > 3 {
+			return false
+		}
+		prevlevel = level
+	}
+	return true
 }
 
 func ans2(reports [][]int) int {
 	res := 0
 	for _, rep := range(reports) {
-		if isSafe(rep, 1) || isSafe(rep[1:], 0) {
-			res += 1
-		} else {
-			rep[1] = rep[0]
-			if isSafe(rep[1:], 0) {
+		for i := range(rep) {
+			if isSafeSkip(rep, i) {
 				res += 1
+				break
 			}
 		}
 	}
@@ -102,6 +109,5 @@ func ans2(reports [][]int) int {
 func main() {
 	reports := readInput()
 	fmt.Println("ans1:", ans1(reports))
-	fmt.Println("- 1a:", ans1a(reports))
 	fmt.Println("ans2:", ans2(reports))
 }
